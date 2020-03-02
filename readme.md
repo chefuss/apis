@@ -17,7 +17,7 @@ Solicitando desde nuestra app:
 - Listar 10 gifs sobre risas. 
 - Veamos el archivo index.html
 
-### Parte 3
+#### Parte 3
 Ahora veamos si podemos requerir de acuerdo a lo que desea el usuario.
 - Ir al archivo consulta.html
 - Veamos como está construido.
