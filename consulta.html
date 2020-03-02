@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consulta tu Giphyaaaaahhhh</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="main">
+    <h1>Consulta</h1>
+    <p>Selecciona el tipo de consulta que deseas hacer</p>
+    <select name="tipo-consulta" id="tipo-consulta">
+      <option value="trending">Trending</option>
+      <option value="search">Search</option>
+    </select>
+
+    <ul id="list"></ul>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+    // EL MÉTODO DE JQUERY Ajax recibe un objeto con dos propiedades:
+    // la url y los settings.
+    // la url es un string
+    // y los settings son un objeto literal.
+    // en este objeto de settings podemos colocar más cosas.
+    //doc: https://api.jquery.com/jquery.ajax/
+
+    //Seleccinamos un elemento del DOM para mostrar la lista.
+    var list = document.querySelector('#list');
+
+    var tipoConsulta = document.querySelector('#tipo-consulta');
+    
+    //Armamos el requerimiento.
+    //cambiar apiKey por tu apiKey
+
+    var authorization = 'api_key=TUAPIKEY';
+    var paramsSearch = [
+      'q=risas histerica',
+      'limit=2',
+      authorization
+    ];
+    var paramsTrending = [
+      'limit=2',
+      authorization
+    ];
+
+    document.addEventListener('change', function() {
+      console.log(tipoConsulta.value);
+      var url = 'https://api.giphy.com/v1/stickers/' + tipoConsulta.value;
+      var params = (tipoConsulta.value === 'trending') ? armarUrl(paramsTrending) : armarUrl(paramsSearch);
+      var settings = {
+        url: url+params,
+      }
+      getData(settings, listGiphs);
+    })
+   
+
+    function armarUrl(params) {
+      var parametrosUrl = '';
+      //ponemos los parámetros en nuestra url;
+        for (var i= 0; i< params.length; i ++) {
+          if (i === 0) {
+            parametrosUrl += '?' + params[i];
+          } else {
+            parametrosUrl += '&' + params[i];
+          }
+        }
+      console.log(parametrosUrl);
+      return parametrosUrl
+    }
+    function listGiphs(data) {
+      list.innerHTML = '';
+      if (data.data.length === 0) {
+        var notice = document.createElement('p');
+        notice.textContent = '¡¡No hay datos para mostrar!!!';
+        list.append(notice);
+      }
+      var datos = data.data;
+      for (var i = 0; i < datos.length; i++) {
+        var li = document.createElement('li');
+        var p = document.createElement('p');
+        p.textContent = datos[i].title;
+
+        var image = document.createElement('img');
+        image.src = datos[i].images.original.url;
+        li.append(p,image);
+        list.append(li);
+      }
+    }
+
+    function getData(settings, callback) {
+      var xhr = $.ajax(settings);
+      xhr.done(function(data) { 
+        console.log("success got data", data); 
+        callback(data);
+      });
+    }
+
+  </script>
+</body>
+</html>

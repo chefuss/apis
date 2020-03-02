@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giphyaaaaahhhh</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="main">
+    <h1>Giphyaaaaahhhh</h1>
+    <ul id="list"></ul>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+    // EL MÉTODO DE JQUERY Ajax recibe un objeto con dos propiedades:
+    // la url y los settings.
+    // la url es un string
+    // y los settings son un objeto literal.
+    // en este objeto de settings podemos colocar más cosas.
+    //doc: https://api.jquery.com/jquery.ajax/
+
+    //Seleccinamos un elemento del DOM para mostrar la lista.
+    var list = document.querySelector('#list');
+
+    //Armamos el requerimiento.
+    var url = 'https://api.giphy.com/v1/gifs/search';
+    var authorization = 'api_key=TUAPIKEY';
+    var params = [
+      'q=risas histerica',
+      'limit=5',
+      authorization
+    ];
+
+    //ponemos los parámetros en nuestra url;
+    for (var i= 0; i< params.length; i ++) {
+      if (i === 0) {
+        url += '?' + params[i];
+      } else {
+        url += '&' + params[i];
+      }
+    }
+    console.log(url);
+
+    var settings = {
+      url: url,
+    }
+    
+    getData(settings, listGiphs);
+
+    function listGiphs(data) {
+      if (data.data.length === 0) {
+        var notice = document.createElement('p');
+        notice.textContent = '¡¡No hay datos para mostrar!!!';
+        list.append(notice);
+      }
+      var datos = data.data;
+      for (var i = 0; i < datos.length; i++) {
+        var li = document.createElement('li');
+        var p = document.createElement('p');
+        p.textContent = datos[i].title;
+
+        var image = document.createElement('img');
+        image.src = datos[i].images.original.url;
+        li.append(p,image);
+        list.append(li);
+      }
+    }
+
+    function getData(settings, callback) {
+      var xhr = $.ajax(settings);
+      xhr.done(function(data) { 
+        console.log("success got data", data); 
+        callback(data);
+      });
+    }
+
+  </script>
+</body>
+</html>
